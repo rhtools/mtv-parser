@@ -3,7 +3,7 @@ from typing import Self
 
 from pydantic import Field
 
-from .base import K8SRef, ParserBaseModel
+from .base import ParserBaseModel
 from .status import StatusCondition, StatusConditionType
 from .timed import TimedBaseModel
 
