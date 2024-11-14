@@ -11,11 +11,11 @@ from mtv_parser.config import Config
 from mtv_parser.models import PlanList
 
 
-def pass_output(f: Callable):
+def pass_output(f: Callable) -> Callable:
     """Wrap decorated function to create output module, and tear it down afterwards."""
 
     @click.pass_context
-    def output_func(ctx: click.Context, *args: Any, **kwargs: Any):
+    def output_func(ctx: click.Context, *args: Any, **kwargs: Any) -> Any:
         output = Output()
 
         response = ctx.invoke(f, output, *args, **kwargs)
