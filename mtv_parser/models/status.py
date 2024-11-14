@@ -23,7 +23,7 @@ class StatusConditionType(StrEnum):
 class StatusCondition(ParserBaseModel):
     category: StatusConditionCategory
     durable: bool | None = None
-    lastTransitionTime: datetime
+    last_transition_time: datetime
     message: str
     status: bool = True
     type_: StatusConditionType

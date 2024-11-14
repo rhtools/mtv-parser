@@ -49,7 +49,7 @@ class PipelineStatus(TimedBaseModel):
 
 
 class VMStatus(TimedBaseModel):
-    conditions: list[StatusCondition]
+    conditions: list[StatusCondition] = Field(default_factory=list)
     id: str
     name: str
     phase: Phase
