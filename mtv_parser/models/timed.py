@@ -7,8 +7,8 @@ from .base import ParserBaseModel
 
 
 class TimedBaseModel(ParserBaseModel):
-    started: datetime | None = Field(kw_only=True, default=None)
-    completed: datetime | None = Field(kw_only=True, default=None)
+    started: datetime | None = Field(default=None)
+    completed: datetime | None = Field(default=None)
 
     @property
     def duration(self: Self) -> timedelta | None:
