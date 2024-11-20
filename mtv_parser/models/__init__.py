@@ -21,6 +21,17 @@ CommonModels: list[type[ParserBaseModel]] = [TimedBaseModel, StatusCondition]
 
 
 def parse_data(data: dict) -> BaseModel:
+    """validate a dict of data as a pydantic model based on BaseModel
+
+    Args:
+        data (dict): data to send to validator
+
+    Raises:
+        ValueError: if no matching models are found
+
+    Returns:
+        BaseModel: Parsed model based on BaseModel
+    """
     for model in RootModels:
         try:
             return model(**data)

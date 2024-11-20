@@ -4,7 +4,7 @@ HELP_TEST_ARGS = {
 }
 
 HELP_TEST_ENVS = {
-    "summary_with_file_env": {"mtv_file": "testfile"},
+    "summary_with_file_env": {"mtv_files": '["testfile"]'},
 }
 
 HELP_TEST_OUTPUT = {
@@ -21,15 +21,15 @@ HELP_TEST_OUTPUT = {
         " summary [OPTIONS]\n\n"
         "  Generate summary of MTV plan.\n\n"
         "Options:\n"
-        "  --file PATH  File to load  [required]\n"
-        "  --help       Show this message and exit.\n"
+        "  -f, --file PATH  File to load  [required]\n"
+        "  --help           Show this message and exit.\n"
     ),
     "summary_with_file_env": (
         " summary [OPTIONS]\n\n"
         "  Generate summary of MTV plan.\n\n"
         "Options:\n"
-        "  --file PATH  File to load\n"
-        "  --help       Show this message and exit.\n"
+        "  -f, --file PATH  File to load\n"
+        "  --help           Show this message and exit.\n"
     ),
 }
 

@@ -44,6 +44,10 @@ def root_command(env: None) -> Generator[BaseCommand, None, None]:
     Yields:
         BaseCommand object, loaded after environment monkeypatching
     """
+    if "mtv_parser.cli" in sys.modules:
+        del sys.modules["mtv_parser.cli"]
+    if "mtv_parser.config" in sys.modules:
+        del sys.modules["mtv_parser.config"]
     from mtv_parser.cli import root as cmd
 
     yield cmd
@@ -51,3 +55,5 @@ def root_command(env: None) -> Generator[BaseCommand, None, None]:
         del sys.modules["mtv_parser.cli"]
     if "cmd" in sys.modules:
         del sys.modules["cmd"]
+    if "mtv_parser.config" in sys.modules:
+        del sys.modules["mtv_parser.config"]
