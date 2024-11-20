@@ -1,5 +1,5 @@
 import sys
-from typing import Any, Generator
+from collections.abc import Generator
 
 import pytest
 from click import BaseCommand
@@ -9,27 +9,6 @@ from click.testing import CliRunner
 @pytest.fixture
 def runner() -> CliRunner:
     return CliRunner()
-
-
-@pytest.fixture
-def env(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> Generator[None, Any, None]:
-    """Monkeypatch environment with keys and values from parametrization.
-
-    parameter is expected to be dict[str, str]
-
-    Args:
-        request (pytest.FixtureRequest): pytest request fixture
-        monkeypatch (pytest.MonkeyPatch): pytest monkeypatch fixture
-
-    Yields:
-        None: Uses yield to ensure cleanup runs.
-    """
-    env: dict[str, str] = request.param
-    for name, value in env.items():
-        monkeypatch.setenv(name, value)
-    yield None
-    for name in env.keys():
-        monkeypatch.delenv(name, raising=False)
 
 
 @pytest.fixture
