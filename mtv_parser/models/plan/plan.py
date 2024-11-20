@@ -3,9 +3,9 @@ from typing import Self
 
 from pydantic import Field
 
-from .base import K8SBaseModel, K8SRef, ParserBaseModel
+from ..base import K8SBaseModel, K8SRef, ParserBaseModel
+from ..status import StatusCondition, StatusConditionType
 from .migration import MigrationStatus
-from .status import StatusCondition, StatusConditionType
 
 
 class PlanSpec(ParserBaseModel):

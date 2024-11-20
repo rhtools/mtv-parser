@@ -1,3 +1,4 @@
+import logging
 from collections.abc import Generator
 from pathlib import Path
 from typing import Any
@@ -30,10 +31,17 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
         testvalues: list[tuple[str, type, dict[str, Any]]] = []
         testnames: list[str] = []
         for model_name in unit_const.TEST_MODEL_YAML.keys():
+            model_path = model_name.split(".")
+            model: Any = models
+            for part in model_path:
+                logging.info("loading %s from %s", part, model)
+                model = getattr(model, part)
+            if not issubclass(model, models.ParserBaseModel):
+                raise ValueError("Cannot load model %s", model_name)
             test_results = unit_const.TEST_MODEL_RESULTS.get(model_name, dict())
             for test_name, yaml_string in unit_const.TEST_MODEL_YAML.get(model_name, dict()).items():
                 testnames.append(f"{model_name}-{test_name}")
-                testvalues.append((yaml_string, getattr(models, model_name), test_results.get(test_name, dict())))
+                testvalues.append((yaml_string, model, test_results.get(test_name, dict())))
 
         metafunc.parametrize(
             argnames=["yaml_data", "model", "expected"], argvalues=testvalues, ids=testnames, indirect=["yaml_data"]

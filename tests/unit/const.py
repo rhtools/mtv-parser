@@ -3,7 +3,7 @@ from zoneinfo import ZoneInfo
 
 from pydantic import ValidationError
 
-from mtv_parser.models.vms import Phase as VMPhase
+from mtv_parser.models.plan.vms import Phase as VMPhase
 
 from . import utils
 
@@ -31,7 +31,7 @@ TEST_MODEL_YAML = {
         "not_completed": "started: 2024-04-10T17:32:55Z\n",
         "not_started": "{}",
     },
-    "VMStatus": {
+    "plan.VMStatus": {
         "no_condition_no_phase": "id: testid\nname: testname\n",
         "no_condition_pending": "id: testid\nname: testname\nphase: Pending\n",
         "no_condition_completed": "id: testid\nname: testname\nphase: Completed\n",
@@ -112,7 +112,7 @@ TEST_MODEL_RESULTS = {
             "completed": None,
         },
     },
-    "VMStatus": {
+    "plan.VMStatus": {
         "no_condition_no_phase": {"raises": ValidationError},
         "no_condition_pending": {
             "id": "testid",

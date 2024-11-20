@@ -3,9 +3,9 @@ from typing import Self
 
 from pydantic import Field
 
-from .base import ParserBaseModel
-from .status import StatusCondition, StatusConditionType
-from .timed import TimedBaseModel
+from ..base import ParserBaseModel
+from ..status import StatusCondition, StatusConditionType
+from ..timed import TimedBaseModel
 
 
 class Phase(StrEnum):
