@@ -2,14 +2,14 @@ from typing import Self
 
 from pydantic import Field
 
-from ..base import K8SRef
-from ..status import StatusCondition
+from ..k8sbase import K8SRef
 from ..timed import TimedBaseModel
+from .status import PlanStatusCondition
 from .vms import VMStatus
 
 
 class MigrationHistory(TimedBaseModel):
-    conditions: list[StatusCondition]
+    conditions: list[PlanStatusCondition]
     migration: K8SRef
     plan: K8SRef
 

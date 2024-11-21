@@ -2,13 +2,13 @@ from typing import Self
 
 from pydantic import Field
 
-from ..base import K8SBaseModel
+from ..k8sbase import K8SBaseModel
 from .plan import Plan
 
 
 class PlanList(K8SBaseModel):
     kind: str = Field(pattern=r"^(Plan)?List$")
-    api_version: str = Field(pattern=r"^v1$")
+    api_version: str = Field(pattern=r"^(v1)|(forklift.konveyor.io/v1(beta1)?)$")
     items: list[Plan]
 
     @property

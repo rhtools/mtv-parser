@@ -6,3 +6,8 @@ def yaml_indent(yaml_string: str, levels: int = 1, tabsize: int = 2) -> str:
         indented_string = indented_string + space_string + line
 
     return indented_string
+
+
+def yaml_list_item(yaml_string: str) -> str:
+    indented_string = yaml_indent(yaml_string)
+    return f"- {indented_string.lstrip()}"
