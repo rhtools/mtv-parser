@@ -25,16 +25,9 @@ def pass_output(f: Callable) -> Callable:
 
 
 @click.group()
-@click.pass_context
-def root(ctx: click.Context) -> None:
-    """Generate report artifacts based on MTV data.
-    \f
-    Args:
-        ctx (Context): click context object
-    """
-    ctx.ensure_object(dict)
-
-    ctx.obj["Output"] = Output()
+def root() -> None:
+    """Generate report artifacts based on MTV data."""
+    pass
 
 
 @root.command()
