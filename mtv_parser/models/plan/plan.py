@@ -3,16 +3,16 @@ from typing import Self
 
 from pydantic import Field
 
-from .base import K8SBaseModel, ParserBaseModel
+from ..base import K8SBaseModel, K8SRef, ParserBaseModel
+from ..status import StatusCondition, StatusConditionType
 from .migration import MigrationStatus
-from .status import StatusCondition, StatusConditionType
 
 
 class PlanSpec(ParserBaseModel):
-    map_: dict
-    provider: dict
+    map_: dict[str, K8SRef] = Field(default_factory=dict)
+    provider: dict[str, K8SRef] = Field(default_factory=dict)
     target_namespace: str
-    vms: list[dict]
+    vms: list[dict] = Field(default_factory=dict)
 
 
 class PlanStatus(ParserBaseModel):

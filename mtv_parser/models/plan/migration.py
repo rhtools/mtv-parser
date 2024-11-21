@@ -2,9 +2,9 @@ from typing import Self
 
 from pydantic import Field
 
-from .base import K8SRef, ParserBaseModel
-from .status import StatusCondition
-from .timed import TimedBaseModel
+from ..base import K8SRef
+from ..status import StatusCondition
+from ..timed import TimedBaseModel
 from .vms import VMStatus
 
 

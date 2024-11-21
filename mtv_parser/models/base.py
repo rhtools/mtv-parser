@@ -18,10 +18,10 @@ class MetaData(ParserBaseModel):
 
 
 class K8SRef(ParserBaseModel):
-    generation: int
+    generation: int | None = Field(default=None)
     name: str
     namespace: str
-    uid: UUID4
+    uid: UUID4 | None = Field(default=None)
 
 
 class K8SBaseModel(ParserBaseModel):

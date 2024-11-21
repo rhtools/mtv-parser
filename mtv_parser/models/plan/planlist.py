@@ -2,7 +2,7 @@ from typing import Self
 
 from pydantic import Field
 
-from .base import K8SBaseModel
+from ..base import K8SBaseModel
 from .plan import Plan
 
 
