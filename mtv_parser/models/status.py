@@ -1,29 +1,19 @@
 from datetime import datetime
 from enum import StrEnum
 
+from pydantic import Field
+
 from .base import ParserBaseModel
 
 
-class StatusConditionCategory(StrEnum):
-    ADVISORY = "Advisory"
-    CRITICAL = "Critical"
-    ERROR = "Error"
-    WARN = "Warn"
-
-
-class StatusConditionType(StrEnum):
-    FAILED = "Failed"
-    NETWORKMAPREFNOTVALID = "NetworkMapRefNotValid"
-    STORAGEMAPNOTREADY = "StorageMapNotReady"
-    STORAGEREFNOTVALID = "StorageRefNotValid"
-    SUCCEEDED = "Succeeded"
-    VMNOTFOUND = "VMNotFound"
+class ConditionStatus(StrEnum):
+    TRUE = "True"
+    FALSE = "False"
+    UNKNOWN = "Unknown"
 
 
 class StatusCondition(ParserBaseModel):
-    category: StatusConditionCategory
-    durable: bool | None = None
-    last_transition_time: datetime
-    message: str
-    status: bool = True
-    type_: StatusConditionType
+    last_transition_time: datetime | None = Field(default=None)
+    message: str | None = Field(default=None)
+    reason: str | None = Field(default=None)
+    status: ConditionStatus

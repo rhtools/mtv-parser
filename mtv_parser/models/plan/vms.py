@@ -4,8 +4,8 @@ from typing import Self
 from pydantic import Field
 
 from ..base import ParserBaseModel
-from ..status import StatusCondition, StatusConditionType
 from ..timed import TimedBaseModel
+from .status import PlanStatusCondition, PlanStatusConditionType
 
 
 class Phase(StrEnum):
@@ -49,7 +49,7 @@ class PipelineStatus(TimedBaseModel):
 
 
 class VMStatus(TimedBaseModel):
-    conditions: list[StatusCondition] = Field(default_factory=list)
+    conditions: list[PlanStatusCondition] = Field(default_factory=list)
     id: str
     name: str
     phase: Phase
@@ -57,6 +57,6 @@ class VMStatus(TimedBaseModel):
     @property
     def succeeded(self: Self) -> bool:
         for condition in self.conditions:
-            if condition.type_ == StatusConditionType.SUCCEEDED and condition.status:
+            if condition.type_ == PlanStatusConditionType.SUCCEEDED and condition.status:
                 return True
         return False

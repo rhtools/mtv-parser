@@ -3,9 +3,10 @@ from typing import Self
 
 from pydantic import Field
 
-from ..base import K8SBaseModel, K8SRef, ParserBaseModel
-from ..status import StatusCondition, StatusConditionType
+from ..base import ParserBaseModel
+from ..k8sbase import K8SBaseModel, K8SRef
 from .migration import MigrationStatus
+from .status import PlanStatusCondition, PlanStatusConditionType
 
 
 class PlanSpec(ParserBaseModel):
@@ -16,7 +17,7 @@ class PlanSpec(ParserBaseModel):
 
 
 class PlanStatus(ParserBaseModel):
-    conditions: list[StatusCondition] = Field(default_factory=list)
+    conditions: list[PlanStatusCondition] = Field(default_factory=list)
     migration: MigrationStatus | None = Field(kw_only=True, default=None)
 
 
@@ -55,6 +56,6 @@ class Plan(K8SBaseModel):
         if self.status.migration:
             return self.status.migration.succeeded
         for condition in self.status.conditions:
-            if condition.type_ == StatusConditionType.SUCCEEDED and condition.status:
+            if condition.type_ == PlanStatusConditionType.SUCCEEDED and condition.status:
                 return True
         return False

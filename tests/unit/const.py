@@ -8,7 +8,7 @@ from mtv_parser.models.plan.vms import Phase as VMPhase
 from . import utils
 
 TEST_SUCCESS_CONDITION = (
-    "- status: true\n"
+    '- status: "True"\n'
     "  type: Succeeded\n"
     "  lastTransitionTime: 2024-04-10T17:33:25Z\n"
     "  message: ''\n"
@@ -16,11 +16,34 @@ TEST_SUCCESS_CONDITION = (
 )
 
 TEST_FAILED_CONDITION = (
-    "- status: true\n"
+    '- status: "True"\n'
     "  type: Failed\n"
     "  lastTransitionTime: 2024-04-10T17:33:25Z\n"
     "  message: ''\n"
     "  category: Advisory"
+)
+
+TEST_BASE_PLAN_YAML = (
+    "apiVersion: forklift.konveyor.io/v1beta1\n"
+    "kind: Plan\n"
+    "metadata:\n"
+    "  name: testplan\n"
+    "spec:\n"
+    "  targetNamespace: testns\n"
+    "  vms: []\n"
+    "status: {}\n"
+)
+
+TEST_BASE_VM_YAML = (
+    "apiVersion: kubevirt.io/v1\n"
+    "kind: VirtualMachine\n"
+    "metadata:\n"
+    "  name: testvm\n"
+    "spec:\n"
+    "  template:\n"
+    "    metadata: {}\n"
+    "    spec: {}\n"
+    "status: {}\n"
 )
 
 TEST_MODEL_YAML = {
@@ -39,16 +62,7 @@ TEST_MODEL_YAML = {
         "not_succeeded": f"id: testid\nname: testname\nphase: Completed\nconditions:\n{TEST_FAILED_CONDITION}",
     },
     "Plan": {
-        "base": (
-            "apiVersion: forklift.konveyor.io/v1beta1\n"
-            "kind: Plan\n"
-            "metadata:\n"
-            "  name: testplan\n"
-            "spec:\n"
-            "  targetNamespace: testns\n"
-            "  vms: []\n"
-            "status: {}\n"
-        ),
+        "base": TEST_BASE_PLAN_YAML,
         "invalid_kind": (
             "apiVersion: forklift.konveyor.io/v1beta1\n"
             "kind: NotPlan\n"
@@ -81,6 +95,63 @@ TEST_MODEL_YAML = {
             "  conditions:\n"
             f"{utils.yaml_indent(TEST_SUCCESS_CONDITION, 2)}"
         ),
+    },
+    "PlanList": {
+        "base": (
+            "apiVersion: forklift.konveyor.io/v1beta1\n"
+            "kind: PlanList\n"
+            "metadata:\n"
+            "  resourceVersion: 1\n"
+            "items:\n"
+            f"{utils.yaml_list_item(TEST_BASE_PLAN_YAML)}"
+        ),
+        "core_list": (
+            "apiVersion: v1\n"
+            "kind: List\n"
+            "metadata:\n"
+            "  resourceVersion: 1\n"
+            "items:\n"
+            f"{utils.yaml_list_item(TEST_BASE_PLAN_YAML)}"
+        ),
+        "invalid_items": (
+            "apiVersion: v1\n"
+            "kind: List\n"
+            "metadata:\n"
+            "  resourceVersion: 1\n"
+            "items:\n"
+            f"{utils.yaml_list_item(TEST_BASE_VM_YAML)}"
+        ),
+    },
+    "VirtualMachineList": {
+        "base": (
+            "apiVersion: kubevirt.io/v1\n"
+            "kind: VirtualMachineList\n"
+            "metadata:\n"
+            "  resourceVersion: 1\n"
+            "items:\n"
+            f"{utils.yaml_list_item(TEST_BASE_VM_YAML)}"
+        ),
+        "core_list": (
+            "apiVersion: v1\n"
+            "kind: List\n"
+            "metadata:\n"
+            "  resourceVersion: 1\n"
+            "items:\n"
+            f"{utils.yaml_list_item(TEST_BASE_VM_YAML)}"
+        ),
+        "invalid_items": (
+            "apiVersion: v1\n"
+            "kind: List\n"
+            "metadata:\n"
+            "  resourceVersion: 1\n"
+            "items:\n"
+            f"{utils.yaml_list_item(TEST_BASE_PLAN_YAML)}"
+        ),
+    },
+    "vm.VirtualMachineSpec": {
+        "running_only": "template:\n  metadata: {}\n  spec: {}\nrunning: True\n",
+        "run_strategy_only": "template:\n  metadata: {}\n  spec: {}\nrunStrategy: Always\n",
+        "running_run_strategy_dupe": "template:\n  metadata: {}\n  spec: {}\nrunStrategy: Always\nrunning: True\n",
     },
 }
 
@@ -152,5 +223,26 @@ TEST_MODEL_RESULTS = {
         "invalid_kind": {"raises": ValidationError},
         "invalid_api_version": {"raises": ValidationError},
         "success_by_condition": {"succeeded": True},
+    },
+    "PlanList": {
+        "base": {},
+        "core_list": {},
+        "invalid_items": {"raises": ValidationError},
+    },
+    "VirtualMachineList": {
+        "base": {},
+        "core_list": {},
+        "invalid_items": {"raises": ValidationError},
+    },
+    "vm.VirtualMachineSpec": {
+        "running_only": {
+            "running": True,
+            "run_strategy": None,
+        },
+        "run_strategy_only": {
+            "running": None,
+            "run_strategy": "Always",
+        },
+        "running_run_strategy_dupe": {"raises": ValidationError},
     },
 }
