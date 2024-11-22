@@ -148,6 +148,11 @@ TEST_MODEL_YAML = {
             f"{utils.yaml_list_item(TEST_BASE_PLAN_YAML)}"
         ),
     },
+    "vm.VirtualMachineSpec": {
+        "running_only": "template:\n  metadata: {}\n  spec: {}\nrunning: True\n",
+        "run_strategy_only": "template:\n  metadata: {}\n  spec: {}\nrunStrategy: Always\n",
+        "running_run_strategy_dupe": "template:\n  metadata: {}\n  spec: {}\nrunStrategy: Always\nrunning: True\n",
+    },
 }
 
 TEST_MODEL_RESULTS = {
@@ -228,5 +233,16 @@ TEST_MODEL_RESULTS = {
         "base": {},
         "core_list": {},
         "invalid_items": {"raises": ValidationError},
+    },
+    "vm.VirtualMachineSpec": {
+        "running_only": {
+            "running": True,
+            "run_strategy": None,
+        },
+        "run_strategy_only": {
+            "running": None,
+            "run_strategy": "Always",
+        },
+        "running_run_strategy_dupe": {"raises": ValidationError},
     },
 }

@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import Field, model_validator
+from pydantic import Field, ValidationError, model_validator
 
 from ..base import ParserBaseModel
 from ..k8sbase import K8SBaseModel
@@ -13,7 +13,7 @@ from .volume import DataVolumeTemplate
 class VirtualMachineSpec(ParserBaseModel):
     data_volume_templates: list[DataVolumeTemplate] = Field(default_factory=list)
     running: bool | None = Field(default=None)
-    run_strategy: RunStrategy | None = Field(default=RunStrategy.UNKNOWN)
+    run_strategy: RunStrategy | None = Field(default=None)
     instance_type: RefMatcher | None = Field(default=None)
     preference: RefMatcher | None = Field(default=None)
     template: VirtualMachineInstanceTemplate
@@ -22,9 +22,10 @@ class VirtualMachineSpec(ParserBaseModel):
     @classmethod
     def running_run_strategy_exclusive(cls: type[ParserBaseModel], data: Any) -> Any:
         if isinstance(data, dict):
-            assert ("running" not in data) or (
-                "runStrategy" not in data
-            ), "running and runStrategy are mutually exclusive"
+            if "running" in data and "runStrategy" in data:
+                raise ValueError("running and runStrategy are mutually exclusive")
+            if "running" not in data and "runStrategy" not in data:
+                data["runStrategy"] = ""
         return data
 
 
