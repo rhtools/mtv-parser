@@ -72,8 +72,8 @@ class CLIOutput:
         number_of_migrations = len(migrations)
         average_time = sum(item["total_duration_mins"] for item in migrations) / number_of_migrations
         total_number_of_vms = sum(item["vms"] for item in migrations)
-        total_disk_size_for_migration = sum(item["total_disk_size"] for item in migrations)
-        average_disk_size_gb =  total_disk_size_for_migration / number_of_migrations / 1024
+        total_disk_size_for_migration = sum(item["total_disk_size"] for item in migrations) / 1024
+        average_disk_size_gb =  total_disk_size_for_migration / number_of_migrations 
         average_transfer_speed = average_disk_size_gb / average_time
         # Find max duration and corresponding plan name
         max_minutes = max(item["total_duration_mins"] for item in migrations)
@@ -95,6 +95,7 @@ class CLIOutput:
         rows.append(["Average runtime in minutes: ", f"{average_time:.1f}"])
         rows.append(["Average disk size (GB): ", f"{average_disk_size_gb:.1f}"])
         rows.append(["Average transfer per hour (GB): ", f"{average_transfer_speed:.1f}"])
+        rows.append(["Total Disk Size Migrated (GB): ", f"{total_disk_size_for_migration}"])
 
         return (tabulate(rows, tablefmt="plain"))
 
@@ -120,7 +121,6 @@ class CLIOutput:
             
         return(tabulate(rows, tablefmt="plain"))
 
-
     def generate_concurrency_report(self, concurrency_data):
         """Generate a textual report of VM concurrency."""
         rows = []
@@ -136,27 +136,14 @@ class CLIOutput:
             rows.append(["No concurrency data available."])
             return tabulate(rows, tablefmt="plain")
         
-        rows.append(["Peak concurrent VMs:", concurrency_data['max_concurrent_total']])
-        rows.append(["Peak time:", concurrency_data['peak_time']])
-        
-        if concurrency_data.get('time_to_significant_drop'):
-            rows.append(["Time from peak to significant drop (mins):", f"{concurrency_data['time_to_significant_drop']:.1f}"])
+        rows.append(["Peak concurrent VMs:", concurrency_data.get('max_concurrent_total', 0)])
+        rows.append(["Peak time:", concurrency_data.get('peak_time', 'Unknown')])
+        rows.append(["Average concurrent VMs:", concurrency_data.get('average_concurrent_vms', 0)])
         
         rows.append([""])
         rows.append(["Maximum concurrent VMs by OS type:"])
-        for os_type, count in sorted(concurrency_data['max_concurrent'].items()):
+        for os_type, count in sorted(concurrency_data.get('max_concurrent', {}).items()):
             rows.append([f" {os_type}:", count])
-        
-        if concurrency_data.get('concurrent_periods'):
-            rows.append([""])
-            rows.append(["Concurrency periods:"])
-            for i, period in enumerate(concurrency_data['concurrent_periods'], 1):
-                rows.append([f" Period {i}:"])
-                rows.append([f"   Start:", period['start']])
-                rows.append([f"   End:", period['end']])
-                rows.append([f"   Duration (mins):", f"{period['duration']:.1f}"])
-                rows.append([f"   Peak VMs:", period['peak']])
-                rows.append([f"   Peak time:", period['peak_time']])
         
         if concurrency_data.get('significant_drops'):
             rows.append([""])
@@ -165,6 +152,13 @@ class CLIOutput:
                 rows.append([f" Drop {i}:"])
                 rows.append([f"   Time:", drop['time']])
                 rows.append([f"   From {drop['from']} to {drop['to']} VMs"])
-                rows.append([f"   Percentage drop: {drop['percentage']:.1f}%"])
+                rows.append([f"   Minutes after peak:", f"{drop['duration_mins']:.1f}"])
+        
+        if concurrency_data.get('hourly_concurrent_vms'):
+            rows.append([""])
+            rows.append(["Hourly concurrent VMs:"])
+            for data in concurrency_data['hourly_concurrent_vms']:
+                hour_str = data['hour'].strftime('%Y-%m-%d %H:%M')
+                rows.append([f" {hour_str}:", f"{data['vms']} VMs"])
         
         return tabulate(rows, tablefmt="plain")
